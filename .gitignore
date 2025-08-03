@@ -1,0 +1,30 @@
+# 가상환경 (예: venv, .env 폴더)
+venv/
+.env
+*.env
+
+# Python 캐시 및 컴파일된 파일
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 로그 및 사용자 데이터
+*.log
+logs/
+token.json
+user_config.json
+theme_config.json
+cadinfra.db
+
+# 실행파일 및 빌드결과
+*.exe
+*.spec
+dist/
+build/
+
+# VSCode 설정 (선택)
+.vscode/
+
+# 기타 시스템 파일
+.DS_Store
+Thumbs.db

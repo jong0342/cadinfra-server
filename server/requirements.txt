@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+python-jose
+bcrypt
+sqlalchemy
+pydantic
+python-dotenv
+requests
