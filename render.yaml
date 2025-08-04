@@ -6,9 +6,9 @@ services:
 
     buildCommand: |
       pip install --upgrade pip
-      pip install -r requirements.txt
+      pip install -r server/requirements.txt
 
-    startCommand: ./start.sh
+    startCommand: bash server/start.sh
 
     envVars:
       - key: PORT
@@ -16,7 +16,7 @@ services:
       - key: HOST
         value: 0.0.0.0
       - key: PYTHON_VERSION
-        value: 3.11
+        value: 3.13.5
 
     autoDeploy: true
     branch: main
