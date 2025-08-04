@@ -8,7 +8,7 @@ class UserResponse(BaseModel):
     id: int
     username: str
 
-    model_config = ConfigDict(from_attributes=True)  # ✅ Pydantic v2 대응
+    model_config = ConfigDict(from_attributes=True)
 
 class Token(BaseModel):
     access_token: str

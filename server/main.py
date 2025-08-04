@@ -9,7 +9,7 @@ app = FastAPI()
 # DB 테이블 생성
 models.Base.metadata.create_all(bind=engine)
 
-# CORS 허용 설정
+# CORS 설정
 origins = [
     "http://localhost:3000",
     "https://cadinfra-client.onrender.com",

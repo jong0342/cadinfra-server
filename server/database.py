@@ -12,7 +12,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-# 🔧 의존성 주입용 DB 세션 함수
 def get_db():
     db: Session = SessionLocal()
     try:
