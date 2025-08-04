@@ -1,7 +1,3 @@
 @echo off
-echo ===============================
-echo 💻 CADinfra GUI 실행 중...
-echo ===============================
-call venv\Scripts\activate
+set USE_LOCALHOST=0
 python main.py
-pause
