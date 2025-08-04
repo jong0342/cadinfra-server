@@ -1,24 +1,19 @@
-# server/database.py
+# server/database.py - DB 연결 및 세션 처리
 
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
+from dotenv import load_dotenv
+import os
 
-# SQLite 데이터베이스 URL
-SQLALCHEMY_DATABASE_URL = "sqlite:///./cadinfra.db"
+load_dotenv()
 
-# DB 엔진 생성
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./cadinfra.db")
 
-# 세션 클래스
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Base 클래스
 Base = declarative_base()
 
-# DB 세션 의존성 함수
 def get_db():
     db = SessionLocal()
     try:

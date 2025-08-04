@@ -1,8 +1,8 @@
 fastapi
 uvicorn
-python-jose
-bcrypt
 sqlalchemy
 pydantic
+python-jose
+bcrypt
 python-dotenv
 requests

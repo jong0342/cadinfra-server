@@ -1,4 +1,4 @@
-# server/schemas.py
+# server/schemas.py - Pydantic 스키마 정의
 
 from pydantic import BaseModel, EmailStr
 
@@ -14,4 +14,4 @@ class UserOut(BaseModel):
     email: EmailStr
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # orm_mode → from_attributes (Pydantic v2)

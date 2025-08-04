@@ -1,14 +1,17 @@
-# utils/xlsx_loader.py
+# utils/xlsx_loader.py - Excel 파일 로더 및 시트 파서
+
 import pandas as pd
 
-def load_excel_sheet(file_path, sheet_name=None):
+def load_excel_file(filepath):
     try:
-        xls = pd.ExcelFile(file_path)
-        if sheet_name is None:
-            sheet_name = xls.sheet_names[0]
-        df = xls.parse(sheet_name=sheet_name, header=None)
-        df.fillna("", inplace=True)
+        excel_data = pd.ExcelFile(filepath)
+        return excel_data
+    except Exception as e:
+        return None
+
+def load_excel_sheet(filepath, sheet_name):
+    try:
+        df = pd.read_excel(filepath, sheet_name=sheet_name, header=None)
         return df
     except Exception as e:
-        print(f"❌ 엑셀 파일 로딩 오류: {e}")
         return None

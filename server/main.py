@@ -1,22 +1,22 @@
-# server/main.py
+# server/main.py - FastAPI 서버 진입점
 
 from fastapi import FastAPI
-from .auth import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
-import os
+from .auth import router as auth_router
+from .social_login import router as social_router
+from .database import Base, engine
 
-load_dotenv()
+Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(title="CADinfra API Server")
 
-# CORS 허용
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 라우터 등록
-app.include_router(auth_router)
+app.include_router(auth_router, tags=["인증"])
+app.include_router(social_router, tags=["소셜"])

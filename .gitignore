@@ -1,24 +1,33 @@
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
-*.pyd
 
-# VSCode
-.vscode/
+# Environments
+venv/
+.env
+*.env
 
-# Build
+# Logs
+*.log
+logs/
+
+# Python build
 build/
 dist/
 *.spec
 
-# Token, DB, 환경 파일
+# Databases
 *.db
-*.log
-.env
-token.json
-user_config.json
+cadinfra.db
+db.sqlite3
 
-# OS
+# System files
 .DS_Store
 Thumbs.db
+
+# VS Code
+.vscode/
+
+# Windows batch
+*.bat

@@ -1,33 +1,34 @@
-# server/utils.py
+# server/utils.py - 해시 및 JWT 토큰 유틸리티
 
-import bcrypt
+from passlib.context import CryptContext
 from jose import jwt, JWTError
-from fastapi import HTTPException
+from datetime import datetime, timedelta
+import os
+from dotenv import load_dotenv
 
-# JWT 설정
-SECRET_KEY = "your_secret_key"  # 배포 시에는 반드시 .env에서 불러와야 함
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")
 ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 1일
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# ✅ 비밀번호 해싱
 def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    return pwd_context.hash(password)
 
-
-# ✅ 비밀번호 검증
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))
+    return pwd_context.verify(plain_password, hashed_password)
 
-
-# ✅ 토큰 생성
-def create_token(email: str) -> str:
-    to_encode = {"sub": email}
+def create_token(data: dict) -> str:
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-
-# ✅ 토큰 디코딩
-def decode_token(token: str) -> dict:
+def decode_token(token: str) -> dict | None:
     try:
-        return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
     except JWTError:
-        raise HTTPException(status_code=401, detail="토큰 디코딩 실패")
+        return None

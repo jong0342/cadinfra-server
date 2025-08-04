@@ -1,4 +1,4 @@
-# main.py - CADinfra GUI 실행 진입점
+# main.py - CADinfra 프로그램 실행 진입점
 import os
 import json
 from gui.login import show_login_window
