@@ -1,0 +1,14 @@
+# Python 파일은 LF 줄바꿈 사용
+*.py text eol=lf
+
+# Bash 스크립트도 LF
+*.sh text eol=lf
+
+# 설정 파일들 (JSON, YAML, env 등)도 LF
+*.json text eol=lf
+*.env text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# README, Markdown 등 문서는 기본 텍스트
+*.md text

@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from server.auth import router as auth_router
+from auth import router as auth_router
 from server.social_login import router as social_router
 
 app = FastAPI()
@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 # 라우터 등록
-app.include_router(auth_router, prefix="/auth")
+app.include_router(auth_router)
 app.include_router(social_router, prefix="/social")
 
 # 기본 루트 테스트용
