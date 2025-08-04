@@ -1,25 +1,23 @@
-# server/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+
 from server.auth import router as auth_router
-from server.social_login import router as social_router
+from server.ui import router as ui_router  # ← 새 라우터 추가
 
 app = FastAPI()
 
-# CORS 설정
+# 정적 파일 경로 등록 (예: 다운로드용 exe)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 운영시 허용 도메인으로 제한 가능
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # 라우터 등록
-app.include_router(auth_router, prefix="/auth")
-app.include_router(social_router, prefix="/social")
-
-# 헬스체크 라우트
-@app.get("/")
-def read_root():
-    return {"message": "✅ CADinfra FastAPI server is running"}
+app.include_router(auth_router)
+app.include_router(ui_router)
