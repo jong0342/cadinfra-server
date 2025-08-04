@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from passlib.context import CryptContext
-from jose import JWTError, jwt
+from jose import jwt
 from datetime import datetime, timedelta
 
 from server import models, schemas
@@ -10,38 +10,30 @@ from server.database import get_db
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-# 🔒 비밀번호 해시 설정
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# 🔐 JWT 설정
-SECRET_KEY = "your-very-secret-key"  # 실제 배포 시 환경변수로 관리 권장
+SECRET_KEY = "your-secret-key"  # 환경변수 처리 권장
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-
-# 🧂 해시 생성
 def get_password_hash(password: str):
     return pwd_context.hash(password)
 
-# 🔍 비밀번호 확인
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
-# 🧑 인증
 def authenticate_user(db: Session, username: str, password: str):
     user = db.query(models.User).filter(models.User.username == username).first()
     if not user or not verify_password(password, user.hashed_password):
         return None
     return user
 
-# 🎫 토큰 생성
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-# ✅ 회원가입
 @router.post("/register", response_model=schemas.UserResponse)
 def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.username == user.username).first()
@@ -54,7 +46,6 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
-# ✅ 로그인
 @router.post("/login", response_model=schemas.Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = authenticate_user(db, form_data.username, form_data.password)

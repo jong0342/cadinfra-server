@@ -1,19 +1,15 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
-# 🔐 회원가입 시 요청 구조
 class UserCreate(BaseModel):
     username: str
     password: str
 
-# 🙍 회원 응답 구조
 class UserResponse(BaseModel):
     id: int
     username: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)  # ✅ Pydantic v2 대응
 
-# 🔑 로그인 후 반환할 토큰 구조
 class Token(BaseModel):
     access_token: str
     token_type: str

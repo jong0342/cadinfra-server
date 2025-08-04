@@ -1,20 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from server import models
 from server.database import engine
+from server import models
 from server.auth import router as auth_router
-
-# 데이터베이스 모델 생성
-models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# CORS 설정 (프론트엔드와 연동 시 필요)
+# DB 테이블 생성
+models.Base.metadata.create_all(bind=engine)
+
+# CORS 허용 설정
 origins = [
-    "http://localhost:3000",  # 로컬 프론트엔드
-    "https://cadinfra.netlify.app",  # 실제 서비스 도메인 있다면 추가
+    "http://localhost:3000",
     "https://cadinfra-client.onrender.com",
-    # 추가 origin...
+    "https://cadinfra.netlify.app",
 ]
 
 app.add_middleware(
@@ -28,8 +27,6 @@ app.add_middleware(
 # 라우터 등록
 app.include_router(auth_router)
 
-# 기본 루트
 @app.get("/")
 def read_root():
     return {"message": "CADinfra backend is running"}
-
