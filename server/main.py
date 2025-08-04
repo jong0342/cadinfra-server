@@ -1,23 +1,24 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.requests import Request
 
 from server.auth import router as auth_router
-from server.ui import router as ui_router  # ← 새 라우터 추가
 
 app = FastAPI()
 
-# 정적 파일 경로 등록 (예: 다운로드용 exe)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# 템플릿 설정 (templates 폴더 필요)
+templates = Jinja2Templates(directory="server/templates")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# 정적 파일 (exe, 이미지 등 다운로드 링크 제공용)
+app.mount("/static", StaticFiles(directory="server/static"), name="static")
 
 # 라우터 등록
-app.include_router(auth_router)
-app.include_router(ui_router)
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
+
+
+# ✅ 루트 경로 → HTML 홈페이지 렌더링
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
