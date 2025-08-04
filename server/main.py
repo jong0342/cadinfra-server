@@ -1,24 +1,35 @@
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-from fastapi.requests import Request
-
+from fastapi.middleware.cors import CORSMiddleware
+from server import models
+from server.database import engine
 from server.auth import router as auth_router
+
+# 데이터베이스 모델 생성
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# 템플릿 설정 (templates 폴더 필요)
-templates = Jinja2Templates(directory="server/templates")
+# CORS 설정 (프론트엔드와 연동 시 필요)
+origins = [
+    "http://localhost:3000",  # 로컬 프론트엔드
+    "https://cadinfra.netlify.app",  # 실제 서비스 도메인 있다면 추가
+    "https://cadinfra-client.onrender.com",
+    # 추가 origin...
+]
 
-# 정적 파일 (exe, 이미지 등 다운로드 링크 제공용)
-app.mount("/static", StaticFiles(directory="server/static"), name="static")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # 라우터 등록
-app.include_router(auth_router, prefix="/auth", tags=["auth"])
+app.include_router(auth_router)
 
+# 기본 루트
+@app.get("/")
+def read_root():
+    return {"message": "CADinfra backend is running"}
 
-# ✅ 루트 경로 → HTML 홈페이지 렌더링
-@app.get("/", response_class=HTMLResponse)
-async def root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})

@@ -1,10 +1,14 @@
-# server/models.py - SQLAlchemy 모델 정의
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
 
-from sqlalchemy import Column, String
-from .database import Base
+Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
 
-    email = Column(String, primary_key=True, index=True)
-    hashed_password = Column(String)
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+
+    def __repr__(self):
+        return f"<User(username='{self.username}')>"

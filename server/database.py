@@ -1,22 +1,18 @@
-# server/database.py - DB 연결 및 세션 처리
-
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
-from dotenv import load_dotenv
-import os
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-load_dotenv()
+# ✅ SQLite 사용 예시 (기본 local 파일)
+SQLALCHEMY_DATABASE_URL = "sqlite:///./db.sqlite3"
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./cadinfra.db")
+# 만약 PostgreSQL 사용 시 아래와 같이 구성
+# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@host:port/dbname"
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+# connect_args는 SQLite에만 필요 (다른 DB는 제거)
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()

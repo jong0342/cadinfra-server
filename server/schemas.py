@@ -1,30 +1,19 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
-
-# ▶ 회원가입 요청
+# 🔐 회원가입 시 요청 구조
 class UserCreate(BaseModel):
     username: str
-    email: EmailStr
     password: str
 
-
-# ▶ 로그인 요청
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
-
-
-# ▶ 로그인 성공 시 반환
-class Token(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
-
-
-# ▶ 사용자 응답 스키마
-class User(BaseModel):
+# 🙍 회원 응답 구조
+class UserResponse(BaseModel):
     id: int
     username: str
-    email: EmailStr
 
     class Config:
-        from_attributes = True
+        orm_mode = True
+
+# 🔑 로그인 후 반환할 토큰 구조
+class Token(BaseModel):
+    access_token: str
+    token_type: str
