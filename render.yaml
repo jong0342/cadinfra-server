@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: cadinfra-server
+    env: python
+    plan: free
+
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+
+    startCommand: ./start.sh
+
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: HOST
+        value: 0.0.0.0
+      - key: PYTHON_VERSION
+        value: 3.11
+
+    autoDeploy: true
+    branch: main
+    region: oregon
